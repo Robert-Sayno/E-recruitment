@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Oct 22, 2024 at 02:43 PM
+-- Host: localhost
+-- Generation Time: Oct 28, 2024 at 12:44 AM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,6 +24,26 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `admins`
+--
+
+CREATE TABLE `admins` (
+  `id` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `admins`
+--
+
+INSERT INTO `admins` (`id`, `email`, `password`, `created_at`) VALUES
+(1, 'admin@admin.com', 'admin', '2024-10-27 22:25:04');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `applications`
 --
 
@@ -32,32 +52,36 @@ CREATE TABLE `applications` (
   `user_id` int(11) DEFAULT NULL,
   `job_id` int(11) DEFAULT NULL,
   `status` enum('pending','accepted','rejected') DEFAULT 'pending',
-  `applied_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `applied_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `full_name` varchar(255) DEFAULT NULL,
+  `email` varchar(255) NOT NULL,
+  `phone` varchar(20) NOT NULL,
+  `cv_file_path` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `applications`
 --
 
-INSERT INTO `applications` (`id`, `user_id`, `job_id`, `status`, `applied_at`) VALUES
-(16, 1, 1, 'pending', '2024-10-22 11:52:39'),
-(17, 2, 2, 'accepted', '2024-10-22 11:52:39'),
-(18, 3, 3, 'rejected', '2024-10-22 11:52:39'),
-(19, 1, 4, 'pending', '2024-10-22 11:52:39'),
-(20, 4, 5, 'pending', '2024-10-22 11:52:39'),
-(21, 3, 6, 'accepted', '2024-10-22 11:52:39'),
-(22, 2, 7, 'pending', '2024-10-22 11:52:39'),
-(23, 5, 8, 'rejected', '2024-10-22 11:52:39'),
-(24, 4, 9, 'pending', '2024-10-22 11:52:39'),
-(25, 1, 10, 'accepted', '2024-10-22 11:52:39'),
-(26, 5, 11, 'pending', '2024-10-22 11:52:39'),
-(27, 2, 12, 'rejected', '2024-10-22 11:52:39'),
-(28, 3, 13, 'pending', '2024-10-22 11:52:39'),
-(29, 4, 14, 'accepted', '2024-10-22 11:52:39'),
-(30, 1, 15, 'pending', '2024-10-22 11:52:39'),
-(31, NULL, 3, 'pending', '2024-10-22 12:14:56'),
-(32, NULL, 4, 'pending', '2024-10-22 12:18:11'),
-(33, 1, 5, 'pending', '2024-10-22 12:19:08');
+INSERT INTO `applications` (`id`, `user_id`, `job_id`, `status`, `applied_at`, `full_name`, `email`, `phone`, `cv_file_path`) VALUES
+(16, 1, 1, 'pending', '2024-10-22 11:52:39', '', '', '', ''),
+(17, 2, 2, 'accepted', '2024-10-22 11:52:39', '', '', '', ''),
+(18, 3, 3, 'rejected', '2024-10-22 11:52:39', '', '', '', ''),
+(19, 1, 4, 'pending', '2024-10-22 11:52:39', '', '', '', ''),
+(20, 4, 5, 'pending', '2024-10-22 11:52:39', '', '', '', ''),
+(21, 3, 6, 'accepted', '2024-10-22 11:52:39', '', '', '', ''),
+(22, 2, 7, 'pending', '2024-10-22 11:52:39', '', '', '', ''),
+(23, 5, 8, 'rejected', '2024-10-22 11:52:39', '', '', '', ''),
+(24, 4, 9, 'pending', '2024-10-22 11:52:39', '', '', '', ''),
+(25, 1, 10, 'accepted', '2024-10-22 11:52:39', '', '', '', ''),
+(26, 5, 11, 'pending', '2024-10-22 11:52:39', '', '', '', ''),
+(27, 2, 12, 'rejected', '2024-10-22 11:52:39', '', '', '', ''),
+(28, 3, 13, 'pending', '2024-10-22 11:52:39', '', '', '', ''),
+(29, 4, 14, 'accepted', '2024-10-22 11:52:39', '', '', '', ''),
+(30, 1, 15, 'pending', '2024-10-22 11:52:39', '', '', '', ''),
+(31, NULL, 3, 'pending', '2024-10-22 12:14:56', '', '', '', ''),
+(32, NULL, 4, 'pending', '2024-10-22 12:18:11', '', '', '', ''),
+(33, 1, 5, 'pending', '2024-10-22 12:19:08', '', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -166,11 +190,19 @@ INSERT INTO `users` (`id`, `email`, `password`, `role`, `created_at`) VALUES
 (13, 'ivan.ssekandi@gmail.com', 'password12', 'applicant', '2024-10-22 11:52:20'),
 (14, 'lillian.nabudere@gmail.com', 'password13', 'applicant', '2024-10-22 11:52:20'),
 (15, 'hassan.kasule@gmail.com', 'password14', 'applicant', '2024-10-22 11:52:20'),
-(16, 'diana.muwanga@gmail.com', 'password15', 'applicant', '2024-10-22 11:52:20');
+(16, 'diana.muwanga@gmail.com', 'password15', 'applicant', '2024-10-22 11:52:20'),
+(17, 'robsseno@gmail.com', '$2y$10$9zofVrsSq.nv3Xz8Hc5Bb.T5bUy7qa7ZWe6MYXuEwl58Gb/WGIJmu', 'applicant', '2024-10-27 17:02:41');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `admins`
+--
+ALTER TABLE `admins`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- Indexes for table `applications`
@@ -204,6 +236,12 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `admins`
+--
+ALTER TABLE `admins`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `applications`
 --
 ALTER TABLE `applications`
@@ -225,7 +263,7 @@ ALTER TABLE `partners`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- Constraints for dumped tables

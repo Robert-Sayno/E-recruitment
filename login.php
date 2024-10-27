@@ -1,4 +1,45 @@
-<?php include('includes/db_connect.php'); ?>
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+session_start(); // Start the session at the top
+
+// Include database connection file
+include('includes/db_connect.php');
+
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Check if the form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    // Prepare and execute the SQL statement
+    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $user = $result->fetch_assoc();
+
+        // Verify the password
+        if (password_verify($password, $user['password'])) {
+            // Set session variables
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_email'] = $user['email'];
+            header("Location: index.php"); // Redirect to home page
+            exit();
+        } else {
+            $error_message = "Invalid password.";
+        }
+    } else {
+        $error_message = "No user found with that email.";
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +54,6 @@
             background-color: #f4f6f9;
             font-family: 'Arial', sans-serif;
         }
-
         /* Navbar Styling */
         .navbar {
             background-color: #2C3E50;
@@ -24,7 +64,6 @@
         .nav-link:hover {
             color: #f39c12 !important;
         }
-
         /* Container Styling */
         .container {
             max-width: 450px;
@@ -38,7 +77,6 @@
             font-weight: bold;
             color: #2C3E50;
         }
-
         /* Form Styling */
         .form-group label {
             font-weight: 600;
@@ -65,7 +103,6 @@
             background-color: #f39c12;
             color: #fff;
         }
-
         /* Footer Styling */
         footer {
             background-color: #2C3E50;
@@ -76,7 +113,6 @@
         footer .p-3 {
             margin: 0;
         }
-
         /* Responsive Design */
         @media (max-width: 575px) {
             .container {
@@ -126,37 +162,10 @@
             <button type="submit" class="btn btn-primary w-100">Login</button>
         </form>
 
-        <?php
-        // Check if the form is submitted
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $email = $_POST['email'];
-            $password = $_POST['password'];
-
-            // Prepare and execute the SQL statement
-            $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-            $stmt->bind_param("s", $email);
-            $stmt->execute();
-            $result = $stmt->get_result();
-
-            if ($result->num_rows > 0) {
-                $user = $result->fetch_assoc();
-                
-                // Verify the password
-                if (password_verify($password, $user['password'])) {
-                    // Start session and set user session variables
-                    session_start();
-                    $_SESSION['user_id'] = $user['id'];
-                    $_SESSION['user_email'] = $user['email'];
-                    header("Location: index.php"); // Redirect to home page
-                    exit();
-                } else {
-                    echo '<div class="alert alert-danger mt-3">Invalid password.</div>';
-                }
-            } else {
-                echo '<div class="alert alert-danger mt-3">No user found with that email.</div>';
-            }
-        }
-        ?>
+        <!-- Display error message if set -->
+        <?php if (isset($error_message)): ?>
+            <div class="alert alert-danger mt-3"><?php echo htmlspecialchars($error_message); ?></div>
+        <?php endif; ?>
     </div>
 
     <!-- Footer -->

@@ -1,3 +1,14 @@
+<?php
+// Start the session
+session_start();
+
+// Redirect to login page if the user is not logged in
+if (!isset($_SESSION['user_email'])) {
+    header("Location: login.php");
+    exit();
+}
+?>
+
 <?php include('includes/db_connect.php'); ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -67,10 +78,14 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>
-                <li class="nav-item"><a class="nav-link" href="register.php">Register</a></li>
                 <li class="nav-item"><a class="nav-link" href="career.php">Careers</a></li>
                 <li class="nav-item"><a class="nav-link" href="partners.php">Partners</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Welcome, <?php echo htmlspecialchars($_SESSION['user_email']); ?></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="logout.php">Logout</a>
+                </li>
             </ul>
         </div>
     </nav>
